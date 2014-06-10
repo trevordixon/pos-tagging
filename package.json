@@ -1,0 +1,7 @@
+{
+    "dependencies": {
+        "cli-table": "^0.3.0",
+        "progress": "^1.1.5",
+        "split": "^0.3.0"
+    }
+}
