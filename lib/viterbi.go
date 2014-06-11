@@ -4,13 +4,11 @@ import (
 	"fmt"
 )
 
-func Viterbi(states *ProbMap, observations []string,
-	transitionProbability ProbMatrix, emissionProbability ProbMatrix) {
-
-	fmt.Println(emissionProbability["NNS"].Prob("dogs"))
+func Viterbi(states *ProbMap, observations []string, tr ProbMatrix, em ProbMatrix) {
+	fmt.Println(em["NNS"].Prob("dogs"))
 
 	// for state := range states.Counts {
-	// 	fmt.Println(transitionProbability[state].Prob("AV"))
-	// 	fmt.Println(emissionProbability[state].Prob("dog"))
+	// 	fmt.Println(tr[state].Prob("AV"))
+	// 	fmt.Println(em[state].Prob("dog"))
 	// }
 }

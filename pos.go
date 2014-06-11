@@ -4,16 +4,16 @@ import (
 	"./lib"
 )
 
-func GetPartsAndWords() (parts lib.ProbMatrix, words lib.ProbMatrix, states *lib.ProbMap) {
-	parts = make(lib.ProbMatrix)
-	words = make(lib.ProbMatrix)
+func GetTrainingData() (transition lib.ProbMatrix, emission lib.ProbMatrix, states *lib.ProbMap) {
+	transition = make(lib.ProbMatrix)
+	emission = make(lib.ProbMatrix)
 	states = lib.NewProbMap()
 
 	stream := lib.WordStream("data/allTraining.txt")
 	prevWord := (<-stream).Value
 	for word := range stream {
-		parts.Observe(prevWord, word.Part)
-		words.Observe(word.Part, word.Value)
+		transition.Observe(prevWord, word.Part)
+		emission.Observe(word.Part, word.Value)
 		states.Observe(word.Part)
 
 		prevWord = word.Part
@@ -23,7 +23,6 @@ func GetPartsAndWords() (parts lib.ProbMatrix, words lib.ProbMatrix, states *lib
 }
 
 func main() {
-	parts, words, states := GetPartsAndWords()
-
-	lib.Viterbi(states, nil, parts, words)
+	transition, emission, states := GetTrainingData()
+	lib.Viterbi(states, nil, transition, emission)
 }

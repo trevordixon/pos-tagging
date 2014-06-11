@@ -51,11 +51,11 @@ func GetSuffixes() (suffixes Suffixes) {
 func main() {
 	suffixes := GetSuffixes()
 	context := []string{"", ""}
-	for i := 0; i < 50; i++ {
+	for i := 0; i < 100; i++ {
 		c := strings.Join(context, " ")
 		nextWord := suffixes[c].GetRandom()
 
-		fmt.Print(nextWord + " ")
+		fmt.Printf("%s ", nextWord)
 
 		context[0] = context[1]
 		context[1] = nextWord
