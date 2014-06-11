@@ -20,12 +20,12 @@ func (wc WordCounts) GetRandom() (word string) {
 	sum = 0
 	for word, count := range wc {
 		sum += count
-		if r <= sum {
+		if r < sum {
 			return word
 		}
 	}
 
-	return ""
+	panic("Didn't find a random word.")
 }
 
 func GetSuffixes() (suffixes Suffixes) {
