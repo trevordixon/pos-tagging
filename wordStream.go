@@ -7,9 +7,12 @@ import (
 	"strings"
 )
 
-var counts map[string]string
+type Word struct {
+	Value string
+	Part  string
+}
 
-func count() {
+func streamWords(stream chan Word) {
 	file, err := os.Open("data/allTraining.txt")
 
 	if err != nil {
@@ -22,11 +25,14 @@ func count() {
 
 	for scanner.Scan() {
 		d := strings.Split(scanner.Text(), "_")
-		// word is d[0], part of speech is d[1]
-		fmt.Println(d)
+		stream <- Word{d[0], d[1]}
 	}
+
+	close(stream)
 }
 
-func main() {
-	count()
+func WordStream() (stream chan Word) {
+	stream = make(chan Word)
+	go streamWords(stream)
+	return
 }
