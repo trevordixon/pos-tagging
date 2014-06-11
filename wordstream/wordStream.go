@@ -1,4 +1,4 @@
-package words
+package wordstream
 
 import (
 	"bufio"
@@ -31,7 +31,7 @@ func streamWords(path string, stream chan Word) {
 }
 
 func WordStream(file string) (stream chan Word) {
-	stream = make(chan Word)
+	stream = make(chan Word, 100)
 	go streamWords(file, stream)
 	return
 }

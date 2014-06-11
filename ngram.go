@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./words"
+	"./wordstream"
 	"fmt"
 	"math/rand"
 	"strings"
@@ -33,7 +33,7 @@ func GetSuffixes() (suffixes Suffixes) {
 	suffixes = make(Suffixes)
 	context := []string{"", ""}
 
-	for word := range words.WordStream("data/allTraining.txt") {
+	for word := range wordstream.WordStream("data/allTraining.txt") {
 		c := strings.Join(context, " ")
 
 		if suffixes[c] == nil {

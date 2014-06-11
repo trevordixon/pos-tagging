@@ -1,63 +1,70 @@
 package main
 
 import (
-	"./words"
+	"./wordstream"
 	"fmt"
-	"math/rand"
 	"strings"
 )
 
-type WordCounts map[string]int
 type Suffixes map[string]WordCounts
 
-func (wc WordCounts) GetRandom() (word string) {
-	sum := 0
-	for _, count := range wc {
-		sum += count
-	}
-
-	r := rand.Intn(sum)
-
-	sum = 0
-	for word, count := range wc {
-		sum += count
-		if r < sum {
-			return word
-		}
-	}
-
-	panic("Didn't find a random word.")
+func (s Suffixes) Observe(context string, word string) {
+	s[context].Observe(word)
 }
 
-func GetSuffixes() (suffixes Suffixes) {
-	suffixes = make(Suffixes)
-	context := []string{"", ""}
+type WordCounts struct {
+	Counts map[string]int
+	Total  int
+}
 
-	for word := range words.WordStream("data/allTraining.txt") {
+func (wc WordCounts) Observe(word string) {
+	if wc.Counts == nil {
+		wc.Counts = make(map[string]int)
+	}
+
+	wc.Counts[word]++
+	wc.Total++
+}
+
+func (wc WordCounts) Prob(word string) float64 {
+	return float64(wc.Counts[word]) / float64(wc.Total)
+}
+
+func NewWordcounts() (wc WordCounts) {
+	wc = WordCounts{}
+	wc.Counts = make(map[string]int)
+	return
+}
+
+func GetPartsAndWords() (parts Suffixes, words Suffixes) {
+	parts = make(Suffixes)
+	words = make(Suffixes)
+
+	context := []string{"", ""}
+	for word := range wordstream.WordStream("data/allTraining.txt") {
 		c := strings.Join(context, " ")
 
-		if suffixes[c] == nil {
-			suffixes[c] = make(WordCounts)
-		}
-		suffixes[c][word.Value]++
+		parts.Observe(c, word.Part)
+		words.Observe(word.Part, word.Value)
 
 		context[0] = context[1]
-		context[1] = word.Value
+		context[1] = word.Part
 	}
 
 	return
 }
 
 func main() {
-	suffixes := GetSuffixes()
-	context := []string{"", ""}
-	for i := 0; i < 50; i++ {
-		c := strings.Join(context, " ")
-		nextWord := suffixes[c].GetRandom()
+	parts, words := GetPartsAndWords()
+	fmt.Println(parts, words)
 
-		fmt.Print(nextWord + " ")
+	// context := []string{"", ""}
+	// for i := 0; i < 50; i++ {
+	// 	c := strings.Join(context, " ")
 
-		context[0] = context[1]
-		context[1] = nextWord
-	}
+	// 	fmt.Print(nextWord + " ")
+
+	// 	context[0] = context[1]
+	// 	context[1] = nextWord
+	// }
 }
