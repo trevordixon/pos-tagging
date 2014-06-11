@@ -1,4 +1,4 @@
-package wordstream
+package lib
 
 import (
 	"bufio"

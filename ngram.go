@@ -1,14 +1,14 @@
 package main
 
 import (
-	"./wordstream"
+	"./lib"
 	"fmt"
 	"math/rand"
 	"strings"
 )
 
-type WordCounts map[string]int
 type Suffixes map[string]WordCounts
+type WordCounts map[string]int
 
 func (wc WordCounts) GetRandom() (word string) {
 	sum := 0
@@ -33,7 +33,7 @@ func GetSuffixes() (suffixes Suffixes) {
 	suffixes = make(Suffixes)
 	context := []string{"", ""}
 
-	for word := range wordstream.WordStream("data/allTraining.txt") {
+	for word := range lib.WordStream("data/allTraining.txt") {
 		c := strings.Join(context, " ")
 
 		if suffixes[c] == nil {
