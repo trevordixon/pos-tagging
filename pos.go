@@ -6,9 +6,12 @@ import (
 	"strings"
 )
 
-type Suffixes map[string]WordCounts
+type Suffixes map[string]*WordCounts
 
 func (s Suffixes) Observe(context string, word string) {
+	if s[context] == nil {
+		s[context] = NewWordCounts()
+	}
 	s[context].Observe(word)
 }
 
@@ -30,9 +33,8 @@ func (wc WordCounts) Prob(word string) float64 {
 	return float64(wc.Counts[word]) / float64(wc.Total)
 }
 
-func NewWordcounts() (wc WordCounts) {
-	wc = WordCounts{}
-	wc.Counts = make(map[string]int)
+func NewWordCounts() (wc *WordCounts) {
+	wc = &WordCounts{Counts: make(map[string]int)}
 	return
 }
 
