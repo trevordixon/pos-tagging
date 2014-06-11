@@ -1,8 +1,7 @@
-package main
+package words
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strings"
 )
@@ -12,11 +11,11 @@ type Word struct {
 	Part  string
 }
 
-func streamWords(stream chan Word) {
-	file, err := os.Open("data/allTraining.txt")
+func streamWords(path string, stream chan Word) {
+	file, err := os.Open(path)
 
 	if err != nil {
-		fmt.Errorf("Couldn't open allTraining.txt")
+		panic("Couldn't open " + path)
 	}
 
 	reader := bufio.NewReader(file)
@@ -31,8 +30,8 @@ func streamWords(stream chan Word) {
 	close(stream)
 }
 
-func WordStream() (stream chan Word) {
+func WordStream(file string) (stream chan Word) {
 	stream = make(chan Word)
-	go streamWords(stream)
+	go streamWords(file, stream)
 	return
 }
