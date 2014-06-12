@@ -4,11 +4,16 @@ import (
 	"fmt"
 )
 
-func Viterbi(states *ProbMap, observations []string, tr ProbMatrix, em ProbMatrix) {
-	fmt.Println(em["NNS"].Prob("dogs"))
+type FloatMap map[string]float64
 
-	// for state := range states.Counts {
-	// 	fmt.Println(tr[state].Prob("AV"))
-	// 	fmt.Println(em[state].Prob("dog"))
-	// }
+func Viterbi(states *ProbMap, observations []string, tr ProbMatrix, em ProbMatrix) {
+	V := []FloatMap{make(FloatMap)}
+	path := make(map[string][]string)
+
+	for state := range states.Counts {
+		V[0][state] = states.Prob(state) * em[state].Prob(observations[0])
+		path[state] = []string{state}
+	}
+
+	fmt.Println(V)
 }
