@@ -11,7 +11,7 @@ type Word struct {
 	Part  string
 }
 
-func streamWords(path string, stream chan Word) {
+func streamWords(path string, max int, stream chan Word) {
 	file, err := os.Open(path)
 
 	if err != nil {
@@ -22,7 +22,11 @@ func streamWords(path string, stream chan Word) {
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanWords)
 
-	for scanner.Scan() {
+	for i := 0; scanner.Scan(); i++ {
+		if max > 0 && i >= max {
+			break
+		}
+
 		d := strings.Split(scanner.Text(), "_")
 		stream <- Word{d[0], d[1]}
 	}
@@ -30,8 +34,8 @@ func streamWords(path string, stream chan Word) {
 	close(stream)
 }
 
-func WordStream(file string) (stream chan Word) {
+func WordStream(file string, max int) (stream chan Word) {
 	stream = make(chan Word, 100)
-	go streamWords(file, stream)
+	go streamWords(file, max, stream)
 	return
 }

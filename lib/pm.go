@@ -24,6 +24,9 @@ func (pm *ProbMap) Observe(word string) {
 }
 
 func (pm *ProbMap) Prob(word string) float64 {
+	if pm.Counts[word] == 0 {
+		return 0.00000001
+	}
 	return float64(pm.Counts[word]) / float64(pm.Total)
 }
 
