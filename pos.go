@@ -24,6 +24,6 @@ func GetTrainingData() (transition lib.ProbMatrix, emission lib.ProbMatrix, stat
 
 func main() {
 	transition, emission, states := GetTrainingData()
-	obs := []string{"Mr.", "Dozen", "even", "related", "the", "indignity", "suffered", "when", "he", "was", "n't", "as", "well-known", "to", "many", "clients"}
+	obs := []string{"Mr.", "Dozen", "even", "related", "the", "indignity", "suffered", "when", "he", "was", "n't", "as", "well-known", "to", "his", "client"}
 	lib.Viterbi(states, obs, transition, emission)
 }
