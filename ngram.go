@@ -33,7 +33,7 @@ func GetSuffixes() (suffixes Suffixes) {
 	suffixes = make(Suffixes)
 	context := []string{"", ""}
 
-	for word := range lib.WordStream("data/allTraining.txt") {
+	for word := range lib.WordStream("data/allTraining.txt", 0) {
 		c := strings.Join(context, " ")
 
 		if suffixes[c] == nil {
