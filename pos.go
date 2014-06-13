@@ -4,6 +4,7 @@ import (
 	"./lib"
 	"./pb"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -13,13 +14,18 @@ func GetTrainingData() (transition lib.ProbMatrix, emission lib.ProbMatrix, stat
 	states = lib.NewProbMap()
 
 	stream := lib.WordStream("data/allTraining.txt", 0)
-	prevWord := (<-stream).Value
-	for word := range stream {
-		transition.Observe(prevWord, word.Part)
-		emission.Observe(word.Part, word.Value)
-		states.Observe(word.Part)
 
-		prevWord = word.Part
+	context := []string{(<-stream).Part, (<-stream).Part}
+
+	for word := range stream {
+		c := strings.Join(context, " ")
+
+		transition.Observe(c, word.Part)        // previous 2 parts of speech
+		emission.Observe(word.Part, word.Value) // still one
+		states.Observe(c)                       // 2 words
+
+		context[0] = context[1]
+		context[1] = word.Part
 	}
 
 	return
@@ -42,7 +48,7 @@ func main() {
 
 	words := []string{}
 	parts := []string{}
-	for word := range lib.WordStream("data/devtest.txt", 1000) {
+	for word := range lib.WordStream("data/devtest.txt", 200) {
 		words = append(words, word.Value)
 		parts = append(parts, word.Part)
 	}
@@ -56,7 +62,8 @@ func main() {
 
 	correct := 0
 	for i, part := range class {
-		if part == parts[i] {
+		guess := strings.Split(part, " ")[1]
+		if guess == parts[i] {
 			correct++
 		}
 	}

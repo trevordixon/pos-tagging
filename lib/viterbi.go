@@ -1,6 +1,9 @@
 package lib
 
-import "math"
+import (
+	"math"
+	"strings"
+)
 
 type FloatMap map[string]float64
 
@@ -9,7 +12,9 @@ func Viterbi(states *ProbMap, observations []string, tr ProbMatrix, em ProbMatri
 	path := make(map[string][]string)
 
 	for state := range states.Counts {
-		V[0][state] = math.Log(states.Prob(state)) + math.Log(em[state].Prob(observations[0]))
+		emKey := strings.Split(state, " ")[1]
+
+		V[0][state] = math.Log(states.Prob(state)) + math.Log(em[emKey].Prob(observations[0]))
 		path[state] = []string{state}
 	}
 
@@ -18,11 +23,12 @@ func Viterbi(states *ProbMap, observations []string, tr ProbMatrix, em ProbMatri
 		newPath := make(map[string][]string)
 
 		for state := range states.Counts {
+			emKey := strings.Split(state, " ")[1]
 			maxVal := math.Inf(-1)
 			maxState := ""
 			for state0 := range states.Counts {
 				// Calculate the probablity
-				calc := V[t][state0] + math.Log(tr[state0].Prob(state)) + math.Log(em[state].Prob(obs))
+				calc := V[t][state0] + math.Log(tr[state0].Prob(state)) + math.Log(em[emKey].Prob(obs))
 				if calc > maxVal {
 					maxVal = calc
 					maxState = state0
